@@ -24,6 +24,9 @@ spec:
     remediation:
       retries: 3
   values:
+    cluster:
+      name: homelab
+
     ipam:
       mode: kubernetes
 
