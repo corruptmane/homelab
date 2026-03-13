@@ -31,11 +31,12 @@ spec:
     provider:
       name: pihole
 
+    registry: noop
+    policy: upsert-only
+
     extraArgs:
       - --pihole-server=http://192.168.1.53
       - --pihole-api-version=6
-      - --registry=noop
-      - --policy=upsert-only
 
     env:
       - name: EXTERNAL_DNS_PIHOLE_PASSWORD
