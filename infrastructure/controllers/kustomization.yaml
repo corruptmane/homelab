@@ -13,6 +13,7 @@ resources:
   - external-secrets/helmrelease.yaml
 
   - external-dns/namespace.yaml
+  - external-dns/external-secret.yaml
   - external-dns/helmrepository.yaml
   - external-dns/helmrelease.yaml
 

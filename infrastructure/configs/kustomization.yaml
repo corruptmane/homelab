@@ -7,5 +7,3 @@ resources:
   - cert-manager/internal-ca.yaml
   - cert-manager/external-secret.yaml
   - cert-manager/cluster-issuer.yaml
-
-  - external-dns/external-secret.yaml
