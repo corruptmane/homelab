@@ -8,4 +8,4 @@ spec:
   interval: 1m0s
   ref:
     branch: master
-  url: https://github.com/stepanprodan/podinfo
+  url: https://github.com/stefanprodan/podinfo
