@@ -7,3 +7,5 @@ resources:
   - cert-manager/internal-ca.yaml
   - cert-manager/external-secret.yaml
   - cert-manager/cluster-issuer.yaml
+
+  - nfs/media-pv.yaml
