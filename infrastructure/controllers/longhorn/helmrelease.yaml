@@ -24,6 +24,9 @@ spec:
     remediation:
       retries: 3
   values:
+    csi:
+      kubeletRootDir: /var/lib/kubelet
+
     defaultSettings:
       # Single physical host - replication buys nothing
       defaultReplicaCount: 1
