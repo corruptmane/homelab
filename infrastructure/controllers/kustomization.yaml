@@ -37,3 +37,5 @@ resources:
   - monitoring/helmrelease-prometheus.yaml
   - monitoring/helmrelease-loki.yaml
   - monitoring/helmrelease-tempo.yaml
+  - monitoring/helmrelease-vector.yaml
+  - monitoring/helmrelease-otel-collector.yaml
