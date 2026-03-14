@@ -35,6 +35,7 @@ spec:
       # Single physical host - replication buys nothing
       defaultReplicaCount: 1
       defaultDataLocality: best-effort
+      systemManagedComponentNodeSelector: ""
 
     persistence:
       defaultClassReplicaCount: 1
