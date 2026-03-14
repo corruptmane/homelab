@@ -1,0 +1,112 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vm-stack
+  namespace: flux-system
+spec:
+  interval: 1h
+  timeout: 10m
+  chart:
+    spec:
+      chart: victoria-metrics-k8s-stack
+      version: "0.72.4"
+      sourceRef:
+        kind: HelmRepository
+        name: victoriametrics
+        namespace: flux-system
+      interval: 24h
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    crds: CreateReplace
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    grafana:
+      enabled: false
+
+    # metrics backend
+    vmsingle:
+      enabled: true
+      spec:
+        retentionPeriod: "30d"
+        storage:
+          storageClassName: longhorn
+          resources:
+            requests:
+              storage: 10Gi
+
+    # logs backend
+    vlsingle:
+      enabled: true
+      spec:
+        retentionPeriod: "7d"
+        storage:
+          storageClassName: longhorn
+          resources:
+            requests:
+              storage: 5Gi
+
+    # traces backend
+    vtsingle:
+      enabled: true
+      spec:
+        retentionPeriod: "7d"
+        storage:
+          storageClassName: longhorn
+          resources:
+            requests:
+              storage: 5Gi
+
+    vmagent:
+      enabled: true
+      spec:
+        scrapeInterval: 30s
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 256Mi
+
+    vmalert:
+      enabled: true
+
+    alertmanager:
+      enabled: false
+
+    prometheus-node-exporter:
+      enabled: true
+
+    kube-state-metrics:
+      enabled: true
+
+    kubelet:
+      enabled: true
+
+    kubeApiServer:
+      enabled: true
+
+    kubeControllerManager:
+      enabled: false # Talos doesn't expose this
+
+    kubeScheduler:
+      enabled: false # Talos doesn't expose this
+
+    kubeEtcd:
+      enabled: false # Talos doesn't expose this
+
+    kubeProxy:
+      enabled: false # kube-proxy is disabled (Cilium replacement)
+
+    coreDns:
+      enabled: true
+
+    victoria-metrics-operator:
+      enabled: true
+      operator:
+        enable_converter_ownership: true

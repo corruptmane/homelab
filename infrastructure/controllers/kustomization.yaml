@@ -28,3 +28,7 @@ resources:
   - cnpg/namespace.yaml
   - cnpg/helmrepository.yaml
   - cnpg/helmrelease.yaml
+
+  - monitoring/namespace.yaml
+  - monitoring/helmrepository.yaml
+  - monitoring/helmrelease.yaml
