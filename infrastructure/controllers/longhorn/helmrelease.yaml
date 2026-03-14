@@ -36,6 +36,7 @@ spec:
       defaultReplicaCount: 1
       defaultDataLocality: best-effort
       systemManagedComponentNodeSelector: ""
+      storageReservedPercentageForDefaultDisk: 15
 
     persistence:
       defaultClassReplicaCount: 1
