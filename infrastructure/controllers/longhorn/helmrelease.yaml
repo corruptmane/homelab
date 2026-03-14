@@ -26,11 +26,14 @@ spec:
   values:
     csi:
       kubeletRootDir: /var/lib/kubelet
+      attacherReplicaCount: 2
+      provisionerReplicaCount: 2
+      resizerReplicaCount: 2
+      snapshotterReplicaCount: 2
 
     defaultSettings:
       # Single physical host - replication buys nothing
       defaultReplicaCount: 1
-      systemManagedComponentsNodeSelector: "node-role.kubernetes.io/control-plane:NoSchedule"
       defaultDataLocality: best-effort
 
     persistence:
