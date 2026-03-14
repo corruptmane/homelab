@@ -46,7 +46,7 @@ spec:
         limits:
           memory: 512Mi
 
-    # no scrape configs - VMAgent is the sole scraper
-    serverFiles:
-      prometheus.yml:
-        scrape_configs: []
+    defaultRules:
+      enabled: false
+    scrapeConfigFiles: []
+    extraScrapeConfigs: ""
