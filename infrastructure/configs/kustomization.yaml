@@ -9,3 +9,5 @@ resources:
   - cert-manager/cluster-issuer.yaml
 
   - nfs/media-pv.yaml
+
+  - cnpg/external-secret.yaml

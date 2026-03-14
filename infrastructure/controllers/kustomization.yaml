@@ -24,3 +24,7 @@ resources:
   - longhorn/namespace.yaml
   - longhorn/helmrepository.yaml
   - longhorn/helmrelease.yaml
+
+  - cnpg/namespace.yaml
+  - cnpg/helmrepository.yaml
+  - cnpg/helmrelease.yaml
