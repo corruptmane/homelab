@@ -40,28 +40,6 @@ spec:
             requests:
               storage: 10Gi
 
-    # logs backend
-    vlsingle:
-      enabled: true
-      spec:
-        retentionPeriod: "7d"
-        storage:
-          storageClassName: longhorn
-          resources:
-            requests:
-              storage: 5Gi
-
-    # traces backend
-    vtsingle:
-      enabled: true
-      spec:
-        retentionPeriod: "7d"
-        storage:
-          storageClassName: longhorn
-          resources:
-            requests:
-              storage: 5Gi
-
     vmagent:
       enabled: true
       spec:
