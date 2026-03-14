@@ -113,3 +113,5 @@ spec:
       enabled: true
       operator:
         enable_converter_ownership: true
+      admissionWebhooks:
+        enabled: false
