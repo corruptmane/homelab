@@ -44,6 +44,8 @@ spec:
       enabled: true
       spec:
         scrapeInterval: 30s
+        remoteWrite:
+          - url: http://prometheus-server.monitoring.svc:80/api/v1/write
         resources:
           requests:
             cpu: 50m
