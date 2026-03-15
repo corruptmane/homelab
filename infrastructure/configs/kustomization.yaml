@@ -11,3 +11,8 @@ resources:
   - nfs/media-pv.yaml
 
   - cnpg/external-secret.yaml
+
+  - cilium/l2-announcement-policy.yaml
+
+  - zitadel/external-secret.yaml
+  - zitadel/cnpg-cluster.yaml

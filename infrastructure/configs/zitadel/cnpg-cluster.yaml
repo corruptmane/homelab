@@ -1,0 +1,32 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: zitadel-db
+  namespace: zitadel
+spec:
+  instances: 1
+
+  bootstrap:
+    initdb:
+      database: zitadel
+      owner: zitadel
+
+  storage:
+    size: 2Gi
+    storageClass: longhorn
+
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 50m
+    limits:
+      memory: 256Mi
+
+  postgresql:
+    parameters:
+      shared_buffers: "32MB"
+      effective_cache_size: "96MB"
+      work_mem: "2MB"
+      maintenance_work_mem: "16MB"
+      max_connections: "20"

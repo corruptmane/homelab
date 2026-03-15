@@ -29,6 +29,9 @@ resources:
   - cnpg/helmrepository.yaml
   - cnpg/helmrelease.yaml
 
+  - zitadel/namespace.yaml
+  - zitadel/helmrepository.yaml
+
   - monitoring/namespace.yaml
   - monitoring/helmrepository.yaml
   - monitoring/helmrelease-vmetrics.yaml
