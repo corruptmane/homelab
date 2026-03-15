@@ -60,32 +60,32 @@ spec:
                 Address: admin@corruptmane.xyz
                 IsEmailVerified: true
 
-      env:
-        - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-db-app
-              key: username
-        - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-db-app
-              key: password
-        - name: ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-db-superuser
-              key: username
-        - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-db-superuser
-              key: password
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-admin-password
-              key: password
+    env:
+      - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: zitadel-db-app
+            key: username
+      - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: zitadel-db-app
+            key: password
+      - name: ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: zitadel-db-superuser
+            key: username
+      - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: zitadel-db-superuser
+            key: password
+      - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: zitadel-admin-password
+            key: password
 
     resources:
       requests:
