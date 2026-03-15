@@ -60,6 +60,15 @@ spec:
           - SYS_ADMIN
           - SYS_RESOURCE
 
+    operator:
+      replicas: 1
+
+    l2announcements:
+      enabled: true
+
+    externalIPs:
+      enabled: true
+
     gatewayAPI:
       enabled: true
       enableAlpn: true
