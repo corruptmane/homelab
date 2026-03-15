@@ -7,6 +7,7 @@ metadata:
 spec:
   instances: 1
   enableSuperuserAccess: true
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.4
 
   bootstrap:
     initdb:
