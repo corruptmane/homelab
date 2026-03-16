@@ -28,17 +28,15 @@ spec:
     persistence:
       enabled: false
 
-    env:
+    envValueFrom:
       GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
-        valueFrom:
-          secretKeyRef:
-            name: grafana-oidc
-            key: client-id
+        secretKeyRef:
+          name: grafana-oidc
+          key: client-id
       GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
-        valueFrom:
-          secretKeyRef:
-            name: grafana-oidc
-            key: client-secret
+        secretKeyRef:
+          name: grafana-oidc
+          key: client-secret
 
     grafana.ini:
       server:
