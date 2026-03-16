@@ -47,14 +47,14 @@ spec:
         enabled: true
         name: Zitadel
         allow_sign_up: true
-        scopes: openid profile email
+        scopes: openid profile email urn:zitadel:iam:org:project:roles
         auth_url: https://auth.corruptmane.xyz/oauth/v2/authorize
         token_url: https://auth.corruptmane.xyz/oauth/v2/token
         api_url: https://auth.corruptmane.xyz/oidc/v1/userinfo
         use_pkce: true
-        # TODO: switch to proper RBAC using Zitadel project roles
-        # (urn:zitadel:iam:org:project:roles scope + JMESPath mapping)
-        auto_assign_org_role: Admin
+        role_attribute_path: "contains(keys(\"urn:zitadel:iam:org:project:roles\"[]) || `[]`, 'grafana_admin') && 'GrafanaAdmin' || contains(keys(\"urn:zitadel:iam:org:project:roles\"[]) || `[]`, 'grafana_editor') && 'Editor' || 'Viewer'"
+        allow_assign_grafana_admin: true
+        skip_org_role_sync: false
 
     datasources:
       datasources.yaml:
