@@ -9,5 +9,5 @@ spec:
   dnsNames:
     - auth.corruptmane.xyz
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-production
     kind: ClusterIssuer
