@@ -54,7 +54,9 @@ spec:
         use_pkce: true
         # TODO: switch to proper RBAC using Zitadel project roles
         # (urn:zitadel:iam:org:project:roles scope + JMESPath mapping)
-        role_attribute_path: "'Admin'"
+        role_attribute_path: "'GrafanaAdmin'"
+        allow_assign_grafana_admin: true
+        role_attribute_strict: true
 
     datasources:
       datasources.yaml:
