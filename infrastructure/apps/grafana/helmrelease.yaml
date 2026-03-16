@@ -52,6 +52,9 @@ spec:
         token_url: https://auth.corruptmane.xyz/oauth/v2/token
         api_url: https://auth.corruptmane.xyz/oidc/v1/userinfo
         use_pkce: true
+        # TODO: switch to proper RBAC using Zitadel project roles
+        # (urn:zitadel:iam:org:project:roles scope + JMESPath mapping)
+        role_attribute_path: "'Admin'"
 
     datasources:
       datasources.yaml:
