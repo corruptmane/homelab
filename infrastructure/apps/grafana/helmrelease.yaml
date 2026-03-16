@@ -86,6 +86,56 @@ spec:
             url: http://tempo:3200
             access: proxy
 
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        searchNamespace: ALL
+
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: default
+            orgId: 1
+            folder: ""
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+
+    dashboards:
+      default:
+        node-exporter:
+          gnetId: 1860
+          revision: 42
+          datasource: VictoriaMetrics
+        kubernetes-cluster:
+          gnetId: 15661
+          revision: 2
+          datasource: VictoriaMetrics
+        kubernetes-pods:
+          gnetId: 15760
+          revision: 37
+          datasource: VictoriaMetrics
+        kubernetes-namespaces:
+          gnetId: 15758
+          revision: 44
+          datasource: VictoriaMetrics
+        kubernetes-nodes:
+          gnetId: 15759
+          revision: 40
+          datasource: VictoriaMetrics
+        longhorn:
+          gnetId: 16888
+          revision: 11
+          datasource: VictoriaMetrics
+        cnpg:
+          gnetId: 20417
+          revision: 4
+          datasource: VictoriaMetrics
+
     resources:
       requests:
         cpu: 50m
