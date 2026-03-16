@@ -16,3 +16,5 @@ resources:
 
   - zitadel/external-secret.yaml
   - zitadel/cnpg-cluster.yaml
+
+  - grafana/external-secret.yaml

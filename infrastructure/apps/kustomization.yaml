@@ -6,3 +6,8 @@ resources:
   - zitadel/gateway.yaml
   - zitadel/httproute.yaml
   - zitadel/helmrelease.yaml
+
+  - grafana/certificate.yaml
+  - grafana/gateway.yaml
+  - grafana/httproute.yaml
+  - grafana/helmrelease.yaml

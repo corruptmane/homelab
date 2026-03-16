@@ -1,0 +1,93 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: grafana
+      version: "10.5.15"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+      interval: 24h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    replicas: 1
+
+    persistence:
+      enabled: false
+
+    env:
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID:
+        valueFrom:
+          secretKeyRef:
+            name: grafana-oidc
+            key: client-id
+      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
+        valueFrom:
+          secretKeyRef:
+            name: grafana-oidc
+            key: client-secret
+
+    grafana.ini:
+      server:
+        root_url: https://grafana.corruptmane.xyz
+      auth:
+        disable_login_form: false
+      auth.generic_oauth:
+        enabled: true
+        name: Zitadel
+        allow_sign_up: true
+        scopes: openid profile email
+        auth_url: https://auth.corruptmane.xyz/oauth/v2/authorize
+        token_url: https://auth.corruptmane.xyz/oauth/v2/token
+        api_url: https://auth.corruptmane.xyz/oidc/v1/userinfo
+        use_pkce: true
+
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - name: VictoriaMetrics
+            type: prometheus
+            url: http://vmsingle-victoria-metrics-victoria-metrics-k8s-stack:8428
+            access: proxy
+            isDefault: true
+          - name: Prometheus
+            type: prometheus
+            url: http://prometheus-server:80
+            access: proxy
+          - name: VictoriaLogs
+            type: loki
+            url: http://victoria-logs-victoria-logs-single-server:9428/select/logsql/loki
+            access: proxy
+          - name: Loki
+            type: loki
+            url: http://loki:3100
+            access: proxy
+          - name: VictoriaTraces
+            type: tempo
+            url: http://victoria-traces-vt-single-server:10428/vt
+            access: proxy
+          - name: Tempo
+            type: tempo
+            url: http://tempo:3200
+            access: proxy
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 256Mi
