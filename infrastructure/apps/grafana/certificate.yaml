@@ -9,5 +9,5 @@ spec:
   dnsNames:
     - grafana.corruptmane.xyz
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-production
     kind: ClusterIssuer
