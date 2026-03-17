@@ -44,19 +44,6 @@ spec:
           type: kubernetes_logs
 
       sinks:
-        loki:
-          type: loki
-          inputs:
-            - kubernetes_logs
-          endpoint: http://loki.monitoring.svc:3100
-          encoding:
-            codec: json
-          labels:
-            namespace: "{{ `{{ kubernetes.pod_namespace }}` }}"
-            pod: "{{ `{{ kubernetes.pod_name }}` }}"
-            container: "{{ `{{ kubernetes.container_name }}` }}"
-            node: "{{ `{{ kubernetes.pod_node_name }}` }}"
-
         victoria_logs:
           type: elasticsearch
           inputs:

@@ -49,11 +49,6 @@ spec:
           send_batch_size: 1024
 
       exporters:
-        otlp/tempo:
-          endpoint: tempo.monitoring.svc:4317
-          tls:
-            insecure: true
-
         otlphttp/victoriatraces:
           endpoint: http://victoria-traces-vt-single-server.monitoring.svc:10428
           tls:
@@ -67,5 +62,4 @@ spec:
             processors:
               - batch
             exporters:
-              - otlp/tempo
               - otlphttp/victoriatraces
