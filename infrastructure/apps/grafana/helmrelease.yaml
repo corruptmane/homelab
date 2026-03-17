@@ -65,25 +65,13 @@ spec:
             url: http://vmsingle-victoria-metrics-victoria-metrics-k8s-stack:8428
             access: proxy
             isDefault: true
-          - name: Prometheus
-            type: prometheus
-            url: http://prometheus-server:80
-            access: proxy
           - name: VictoriaLogs
             type: loki
             url: http://victoria-logs-victoria-logs-single-server:9428/select/logsql/loki
             access: proxy
-          - name: Loki
-            type: loki
-            url: http://loki:3100
-            access: proxy
           - name: VictoriaTraces
             type: tempo
             url: http://victoria-traces-vt-single-server:10428/vt
-            access: proxy
-          - name: Tempo
-            type: tempo
-            url: http://tempo:3200
             access: proxy
 
     sidecar:

@@ -33,8 +33,5 @@ resources:
   - monitoring/helmrelease-vmetrics.yaml
   - monitoring/helmrelease-vlogs.yaml
   - monitoring/helmrelease-vtraces.yaml
-  - monitoring/helmrelease-prometheus.yaml
-  - monitoring/helmrelease-loki.yaml
-  - monitoring/helmrelease-tempo.yaml
   - monitoring/helmrelease-vector.yaml
   - monitoring/helmrelease-otel-collector.yaml

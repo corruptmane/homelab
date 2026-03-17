@@ -20,15 +20,6 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: prometheus-community
-  namespace: flux-system
-spec:
-  interval: 24h
-  url: https://prometheus-community.github.io/helm-charts
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
   name: vector
   namespace: flux-system
 spec:
