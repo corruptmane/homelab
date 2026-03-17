@@ -26,6 +26,12 @@ flux events --for HelmRelease/<name> -n <ns> --watch
 flux logs --follow --level=info
 helm get values <release> -n <ns> --all
 kubectl events -n <ns> --types=Warning
+
+# Force ESO to re-sync a secret (default refreshInterval is 1h)
+kubectl annotate externalsecret <name> -n <ns> force-sync=$(date +%s) --overwrite
+
+# Unstick a failed HelmRelease (Flux won't retry on its own)
+flux suspend helmrelease <name> -n <ns> && flux resume helmrelease <name> -n <ns>
 ```
 
 ## Repo Structure & Dependency Model
@@ -35,19 +41,25 @@ clusters/homelab/
   flux-system/                        # Flux bootstrap — DO NOT EDIT
   infrastructure-controllers.yaml     # Kustomization CR → infrastructure/controllers (wait: true)
   infrastructure-configs.yaml         # Kustomization CR → infrastructure/configs (dependsOn: controllers)
+  infrastructure-apps.yaml            # Kustomization CR → infrastructure/apps (dependsOn: configs)
 
 infrastructure/
-  controllers/                        # HelmRepos + Namespaces + HelmReleases (operators/agents)
-    kustomization.yaml                # Lists all controller subdirectories
+  controllers/                        # HelmRepos + Namespaces + HelmReleases (operators/platform)
+    kustomization.yaml
     cilium/ cert-manager/ external-secrets/ external-dns/
-    kyverno/ longhorn/ cnpg/ monitoring/
-  configs/                            # Post-deploy resources (ClusterIssuers, ExternalSecrets, PVs)
-    kustomization.yaml                # Lists all config subdirectories
+    longhorn/ cnpg/ monitoring/ zitadel/
+  configs/                            # Post-deploy resources (ClusterIssuers, ExternalSecrets, CNPG Clusters)
+    kustomization.yaml
     cluster-secret-store.yaml
-    cert-manager/ cnpg/ nfs/
+    cert-manager/ cnpg/ nfs/ cilium/ zitadel/ grafana/
+  apps/                               # Infrastructure apps (depend on configs-layer resources)
+    kustomization.yaml
+    zitadel/ grafana/
 ```
 
-**Dependency chain:** Flux deploys `infrastructure-controllers` first (with `wait: true`), then `infrastructure-configs` only after all controllers are Ready. Adding a new component means adding its directory AND listing it in the parent `kustomization.yaml`.
+**Three-layer dependency chain:** Flux deploys `infrastructure-controllers` first (with `wait: true`), then `infrastructure-configs`, then `infrastructure-apps`. This avoids deadlocks where a HelmRelease in controllers would block configs from deploying resources it depends on (e.g., CNPG Cluster CRs).
+
+A future `apps/` top-level directory (Layer 5) will hold end-user applications with `dependsOn: infrastructure-apps`.
 
 ## Conventions
 
@@ -97,21 +109,49 @@ Never commit secrets. All secrets flow through: **AWS SSM → ExternalSecret →
 - ClusterSecretStore `aws-ssm` is the single entry point (region: `eu-central-1`)
 - SSM parameter paths always start with `/homelab/` (leading slash required)
 - ExternalSecrets use API version `external-secrets.io/v1` (not v1beta1)
+- ESO refreshInterval is 1h — force sync when needed (see Workflow section)
+
+### Gateway API Pattern
+Each externally-exposed service gets: Certificate (cert-manager) + Gateway (Cilium) + HTTPRoute. external-dns auto-creates Pi-hole DNS records from HTTPRoute hostnames.
+
+### CNPG Pattern
+Each app needing PostgreSQL gets its own Cluster CR in `infrastructure/configs/<app>/`. Pin `imageName` to PG 17 (Zitadel doesn't support PG 18). Set `enableSuperuserAccess: true` if the app's init job needs superuser. CNPG auto-generates `<cluster>-app` and `<cluster>-superuser` secrets.
+
+## SSM Parameters Required Before Deploy
+
+These must exist in AWS SSM before the corresponding resources are deployed:
+
+| Parameter | Required Before | How to Create |
+|-----------|----------------|---------------|
+| `/homelab/cloudflare-api-token` | cert-manager ClusterIssuer | Manual |
+| `/homelab/pihole-password` | external-dns | Manual |
+| `/homelab/cnpg-backup-access-key-id` | CNPG backup | OpenTofu |
+| `/homelab/cnpg-backup-secret-access-key` | CNPG backup | OpenTofu |
+| `/homelab/zitadel-master-key` | Zitadel deploy | `LC_ALL=C tr -dc A-Za-z0-9 </dev/urandom \| head -c 32` (must be exactly 32 bytes) |
+| `/homelab/zitadel-admin-password` | Zitadel deploy | Must meet complexity: uppercase + lowercase + number + symbol |
+| `/homelab/grafana-oidc-client-id` | Grafana deploy | From Zitadel OIDC application |
+| `/homelab/grafana-oidc-client-secret` | Grafana deploy | From Zitadel OIDC application |
 
 ## Cluster-Specific Context
 
-- **Single physical host** — Longhorn runs 1 replica (replication is pointless), CSI sidecar replicas capped at 2
-- **Talos Linux** — no systemd, no SSH; kube-scheduler/controller-manager/etcd/kube-proxy metrics endpoints are not exposed; Cilium replaces kube-proxy
+- **Single physical host (Beelink EQR6, 32GB RAM)** — Longhorn runs 1 replica, CSI sidecars at 1 replica
+- **Talos Linux** — no systemd, no SSH; kube-scheduler/controller-manager/etcd/kube-proxy metrics not exposed; Cilium replaces kube-proxy
 - **Gateway API** — used instead of Ingress everywhere; external-dns sources are `gateway-httproute`, `gateway-grpcroute`, `gateway-tlsroute`
-- **Cilium must set `cluster.name: homelab`** — omitting this breaks Hubble relay TLS (certs encode cluster name)
-- **VM Operator webhooks must stay disabled** — `admissionWebhooks.enabled: false` to avoid race condition where webhooks block CR creation during install
+- **Cilium L2 announcements** — `l2announcements.enabled: true` + `externalIPs.enabled: true` required; Proxmox VMs use `ens*` interfaces (not `eth*`/`enp*`)
+- **Cilium must set `cluster.name: homelab`** — omitting this breaks Hubble relay TLS
+- **VM Operator webhooks must stay disabled** — `admissionWebhooks.enabled: false` to avoid race condition
+- **Cilium operator: 1 replica** — 2 replicas cause restarts on the resource-constrained CP node
 
 ## Monitoring Architecture
 
-Dual-stack with fan-out collectors:
+Victoria-only stack with fan-out collectors:
 ```
-VMAgent ──remote-write──→ VMSingle (10Gi) + Prometheus (5Gi)
-Vector DaemonSet ────────→ VictoriaLogs (5Gi) + Loki (3Gi)
-OTel Collector ──────────→ VictoriaTraces (5Gi) + Tempo (3Gi)
+VMAgent ──remote-write──→ VMSingle (10Gi)
+Vector DaemonSet ────────→ VictoriaLogs (5Gi)
+OTel Collector ──────────→ VictoriaTraces (5Gi)
 ```
-Victoria stack is primary; Grafana-ecosystem backends are for comparison/learning. Grafana UI is not deployed yet (Layer 4).
+Grafana-ecosystem backends (Prometheus, Loki, Tempo) were removed to save resources. Grafana at grafana.corruptmane.xyz with Zitadel OIDC, dashboards provisioned via sidecar (vm-k8s-stack + Cilium ConfigMaps) and Grafana.com (Longhorn, CNPG, K8S Dashboard).
+
+## SSO Architecture
+
+Zitadel at auth.corruptmane.xyz — local user management, offline-capable, Google account linking planned. Grafana authenticates via OIDC (generic_oauth). Zitadel login UI is a separate service (`zitadel-login:3000`) requiring its own HTTPRoute rule for `/ui/v2/login`.
