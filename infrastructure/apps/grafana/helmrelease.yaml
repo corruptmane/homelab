@@ -69,6 +69,10 @@ spec:
             url: http://vmsingle-victoria-metrics-victoria-metrics-k8s-stack:8428
             access: proxy
             isDefault: true
+          - name: VictoriaMetrics (Prometheus)
+            type: prometheus
+            url: http://vmsingle-victoria-metrics-victoria-metrics-k8s-stack:8428
+            access: proxy
           - name: VictoriaLogs
             type: victoriametrics-logs-datasource
             url: http://victoria-logs-victoria-logs-single-server:9428
