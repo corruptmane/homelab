@@ -56,18 +56,22 @@ spec:
       users:
         auto_assign_org_role: Admin
 
+    plugins:
+      - victoriametrics-metrics-datasource
+      - victoriametrics-logs-datasource
+
     datasources:
       datasources.yaml:
         apiVersion: 1
         datasources:
           - name: VictoriaMetrics
-            type: prometheus
+            type: victoriametrics-metrics-datasource
             url: http://vmsingle-victoria-metrics-victoria-metrics-k8s-stack:8428
             access: proxy
             isDefault: true
           - name: VictoriaLogs
-            type: loki
-            url: http://victoria-logs-victoria-logs-single-server:9428/select/logsql/loki
+            type: victoriametrics-logs-datasource
+            url: http://victoria-logs-victoria-logs-single-server:9428
             access: proxy
           - name: VictoriaTraces
             type: tempo
@@ -79,34 +83,6 @@ spec:
         enabled: true
         label: grafana_dashboard
         searchNamespace: ALL
-
-    dashboardProviders:
-      dashboardproviders.yaml:
-        apiVersion: 1
-        providers:
-          - name: default
-            orgId: 1
-            folder: ""
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/default
-
-    dashboards:
-      default:
-        kubernetes-cluster:
-          gnetId: 15661
-          revision: 2
-          datasource: VictoriaMetrics
-        longhorn:
-          gnetId: 16888
-          revision: 11
-          datasource: VictoriaMetrics
-        cnpg:
-          gnetId: 20417
-          revision: 4
-          datasource: VictoriaMetrics
 
     resources:
       requests:

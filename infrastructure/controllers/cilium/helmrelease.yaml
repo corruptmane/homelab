@@ -80,10 +80,3 @@ spec:
         enabled: true
       ui:
         enabled: true
-      dashboards:
-        enabled: true
-        namespace: monitoring
-
-    dashboards:
-      enabled: true
-      namespace: monitoring
