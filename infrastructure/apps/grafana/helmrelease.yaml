@@ -77,9 +77,9 @@ spec:
             type: victoriametrics-logs-datasource
             url: http://victoria-logs-victoria-logs-single-server:9428
             access: proxy
-          - name: VictoriaTraces
-            type: tempo
-            url: http://victoria-traces-vt-single-server:10428/vt
+          - name: VictoriaTraces (Jaeger)
+            type: jaeger
+            url: http://victoria-traces-vt-single-server:10428/select/jaeger
             access: proxy
 
     sidecar:
