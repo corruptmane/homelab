@@ -29,7 +29,7 @@ spec:
       enabled: false
     prometheus-node-exporter:
       enabled: false
-    prometheus-push-gateway:
+    prometheus-pushgateway:
       enabled: false
 
     server:

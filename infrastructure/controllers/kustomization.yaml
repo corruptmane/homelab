@@ -17,10 +17,6 @@ resources:
   - external-dns/helmrepository.yaml
   - external-dns/helmrelease.yaml
 
-  - kyverno/namespace.yaml
-  - kyverno/helmrepository.yaml
-  - kyverno/helmrelease.yaml
-
   - longhorn/namespace.yaml
   - longhorn/helmrepository.yaml
   - longhorn/helmrelease.yaml
