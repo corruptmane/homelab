@@ -1,0 +1,13 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: jellyfin-tls
+  namespace: media
+spec:
+  secretName: jellyfin-tls
+  dnsNames:
+    - jellyfin.corruptmane.xyz
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer

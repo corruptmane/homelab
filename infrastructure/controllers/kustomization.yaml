@@ -35,3 +35,5 @@ resources:
   - monitoring/helmrelease-vtraces.yaml
   - monitoring/helmrelease-vector.yaml
   - monitoring/helmrelease-otel-collector.yaml
+
+  - bjw-s/helmrepository.yaml

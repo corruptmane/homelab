@@ -1,0 +1,17 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: jellyfin-gateway
+  namespace: media
+spec:
+  gatewayClassName: cilium
+  listeners:
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: jellyfin.corruptmane.xyz
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: jellyfin-tls
