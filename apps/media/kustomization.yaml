@@ -1,0 +1,33 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - jellyfin/certificate.yaml
+  - jellyfin/gateway.yaml
+  - jellyfin/httproute.yaml
+  - jellyfin/helmrelease.yaml
+
+  - qbittorrent/certificate.yaml
+  - qbittorrent/gateway.yaml
+  - qbittorrent/httproute.yaml
+  - qbittorrent/helmrelease.yaml
+
+  - prowlarr/certificate.yaml
+  - prowlarr/gateway.yaml
+  - prowlarr/httproute.yaml
+  - prowlarr/helmrelease.yaml
+
+  - sonarr/certificate.yaml
+  - sonarr/gateway.yaml
+  - sonarr/httproute.yaml
+  - sonarr/helmrelease.yaml
+
+  - radarr/certificate.yaml
+  - radarr/gateway.yaml
+  - radarr/httproute.yaml
+  - radarr/helmrelease.yaml
+
+  - lidarr/certificate.yaml
+  - lidarr/gateway.yaml
+  - lidarr/httproute.yaml
+  - lidarr/helmrelease.yaml
