@@ -31,3 +31,5 @@ resources:
   - lidarr/gateway.yaml
   - lidarr/httproute.yaml
   - lidarr/helmrelease.yaml
+
+  - flaresolverr/helmrelease.yaml
