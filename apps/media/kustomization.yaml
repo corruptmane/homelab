@@ -32,4 +32,9 @@ resources:
   - lidarr/httproute.yaml
   - lidarr/helmrelease.yaml
 
+  - bazarr/certificate.yaml
+  - bazarr/gateway.yaml
+  - bazarr/httproute.yaml
+  - bazarr/helmrelease.yaml
+
   - flaresolverr/helmrelease.yaml
