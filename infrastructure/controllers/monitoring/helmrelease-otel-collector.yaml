@@ -58,7 +58,7 @@ spec:
           tls:
             insecure: true
         otlphttp/victoriatraces:
-          endpoint: http://victoria-traces-vt-single-server.monitoring.svc:10428
+          traces_endpoint: http://victoria-traces-vt-single-server.monitoring.svc:10428/insert/opentelemetry/v1/traces
           tls:
             insecure: true
 
