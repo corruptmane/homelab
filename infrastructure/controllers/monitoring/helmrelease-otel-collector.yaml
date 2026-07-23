@@ -49,6 +49,14 @@ spec:
           send_batch_size: 1024
 
       exporters:
+        otlphttp/victoriametrics:
+          metrics_endpoint: http://vmsingle-victoria-metrics-victoria-metrics-k8s-stack.monitoring.svc:8428/opentelemetry/v1/metrics
+          tls:
+            insecure: true
+        otlphttp/victorialogs:
+          logs_endpoint: http://victoria-logs-victoria-logs-single-server.monitoring.svc:9428/insert/opentelemetry/v1/logs
+          tls:
+            insecure: true
         otlphttp/victoriatraces:
           endpoint: http://victoria-traces-vt-single-server.monitoring.svc:10428
           tls:
@@ -56,6 +64,20 @@ spec:
 
       service:
         pipelines:
+          metrics:
+            receivers:
+              - otlp
+            processors:
+              - batch
+            exporters:
+              - otlphttp/victoriametrics
+          logs:
+            receivers:
+              - otlp
+            processors:
+              - batch
+            exporters:
+              - otlphttp/victorialogs
           traces:
             receivers:
               - otlp

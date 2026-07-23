@@ -34,6 +34,11 @@ spec:
       enabled: true
       spec:
         retentionPeriod: "30d"
+        # OTLP-ingested metric names follow Prometheus conventions
+        # (dots -> underscores, unit suffixes); cvgen canary analysis and
+        # dashboards depend on it.
+        extraArgs:
+          opentelemetry.usePrometheusNaming: "true"
         storage:
           storageClassName: longhorn
           resources:
