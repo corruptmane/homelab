@@ -1,0 +1,16 @@
+---
+# cvgen manifests live in the app repo (corruptmane/corrupt-cv,
+# deploy/k8s/); the deploy key needs WRITE access — Flux image automation
+# pushes image tag bumps back to it.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: cvgen
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: ssh://git@github.com/corruptmane/corrupt-cv
+  ref:
+    branch: main
+  secretRef:
+    name: cvgen-deploy-key

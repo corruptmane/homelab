@@ -1,0 +1,95 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cvgen-infra
+  namespace: flux-system
+spec:
+  interval: 10m
+  sourceRef:
+    kind: GitRepository
+    name: cvgen
+  path: ./deploy/k8s/infra
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cvgen-db
+  namespace: flux-system
+spec:
+  interval: 10m
+  dependsOn:
+    - name: cvgen-infra
+  sourceRef:
+    kind: GitRepository
+    name: cvgen
+  path: ./deploy/k8s/db
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cvgen-migrations
+  namespace: flux-system
+spec:
+  interval: 10m
+  dependsOn:
+    - name: cvgen-db
+  sourceRef:
+    kind: GitRepository
+    name: cvgen
+  path: ./deploy/k8s/migrations
+  prune: true
+  # Recreate the immutable Job whenever the migrate image tag changes;
+  # wait gates cvgen-apps on migration completion.
+  force: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cvgen-apps
+  namespace: flux-system
+spec:
+  interval: 10m
+  dependsOn:
+    - name: cvgen-migrations
+  sourceRef:
+    kind: GitRepository
+    name: cvgen
+  path: ./deploy/k8s/apps
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cvgen-canary
+  namespace: flux-system
+spec:
+  interval: 10m
+  dependsOn:
+    - name: cvgen-apps
+  sourceRef:
+    kind: GitRepository
+    name: cvgen
+  path: ./deploy/k8s/canary
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cvgen-image-automation
+  namespace: flux-system
+spec:
+  interval: 10m
+  dependsOn:
+    - name: cvgen-apps
+  sourceRef:
+    kind: GitRepository
+    name: cvgen
+  path: ./deploy/k8s/image-automation
+  prune: true
