@@ -30,6 +30,7 @@ resources:
 
   - monitoring/namespace.yaml
   - monitoring/helmrepository.yaml
+  - monitoring/external-secret.yaml
   - monitoring/helmrelease-vmetrics.yaml
   - monitoring/helmrelease-vlogs.yaml
   - monitoring/helmrelease-vtraces.yaml
