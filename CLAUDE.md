@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Repo Is
 
-Flux GitOps repo for a single-node Talos Linux Kubernetes homelab. Flux watches this repo and reconciles all resources automatically. There is no build step, no CI/CD, no tests — changes are applied by pushing to `main`.
+Flux GitOps repo for a two-node Talos Linux Kubernetes homelab (1 control-plane + 1 worker VM on a single Proxmox host). Flux watches this repo and reconciles all resources automatically. There is no build step, no CI/CD, no tests — changes are applied by pushing to `main`.
 
 **Private companion repo** (`corruptmane/homelab-private`) holds OpenTofu configs, Talos machine patches, and the operational runbook.
 
@@ -134,7 +134,10 @@ These must exist in AWS SSM before the corresponding resources are deployed:
 
 ## Cluster-Specific Context
 
-- **Single physical host (Beelink EQR6, 32GB RAM)** — Longhorn runs 1 replica, CSI sidecars at 1 replica
+- **Single physical host (Beelink EQR6, 32GB RAM) running Proxmox** with two Talos VMs: control-plane `talos-cp-0` (192.168.1.30, 5GB) and worker `talos-worker-0` (192.168.1.31, 14GB, 128GB disk) — all workloads run on the one worker
+- **Longhorn runs 1 replica** (single-replica volumes, CSI sidecars at 1 replica) — node removal requires replica eviction first or data is lost
+- **Worker has AMD iGPU passthrough** (node label `gpu: amd`) — jellyfin's nodeSelector depends on it
+- **No metrics-server** — `kubectl top` doesn't work; query VictoriaMetrics (vmsingle, port 8428) instead
 - **Talos Linux** — no systemd, no SSH; kube-scheduler/controller-manager/etcd/kube-proxy metrics not exposed; Cilium replaces kube-proxy
 - **Gateway API** — used instead of Ingress everywhere; external-dns sources are `gateway-httproute`, `gateway-grpcroute`, `gateway-tlsroute`
 - **Cilium L2 announcements** — `l2announcements.enabled: true` + `externalIPs.enabled: true` required; Proxmox VMs use `ens*` interfaces (not `eth*`/`enp*`)
