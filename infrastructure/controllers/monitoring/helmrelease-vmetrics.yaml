@@ -63,6 +63,10 @@ spec:
 
     alertmanager:
       enabled: true
+      # Short CR name: with the default doubled fullname the StatefulSet's
+      # controller-revision-hash pod label exceeds 63 chars and no pod can
+      # be created.
+      name: alertmanager
       spec:
         # ESO-templated config (monitoring/external-secret.yaml): Telegram
         # receiver with bot token + chat id pulled from SSM, so neither
