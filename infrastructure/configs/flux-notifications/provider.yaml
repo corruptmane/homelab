@@ -9,4 +9,4 @@ metadata:
   namespace: flux-system
 spec:
   type: alertmanager
-  address: http://vmalertmanager-victoria-metrics-victoria-metrics-k8s-stack.monitoring.svc:9093/api/v2/alerts
+  address: http://vmalertmanager-alertmanager.monitoring.svc:9093/api/v2/alerts
