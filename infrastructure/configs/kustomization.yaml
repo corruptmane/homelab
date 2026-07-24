@@ -18,3 +18,6 @@ resources:
   - zitadel/cnpg-cluster.yaml
 
   - grafana/external-secret.yaml
+
+  - flux-notifications/provider.yaml
+  - flux-notifications/alert.yaml

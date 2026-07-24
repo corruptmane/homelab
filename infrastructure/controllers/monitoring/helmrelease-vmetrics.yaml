@@ -56,14 +56,18 @@ spec:
           limits:
             memory: 256Mi
 
+    # vmalert delivers to the Alertmanager below (the chart wires the
+    # notifier automatically once alertmanager is enabled).
     vmalert:
       enabled: true
-      spec:
-        extraArgs:
-          notifier.blackhole: "true"
 
     alertmanager:
-      enabled: false
+      enabled: true
+      spec:
+        # ESO-templated config (monitoring/external-secret.yaml): Telegram
+        # receiver with bot token + chat id pulled from SSM, so neither
+        # lands in git. The chart's inline `config` is ignored when set.
+        configSecret: alertmanager-config
 
     prometheus-node-exporter:
       enabled: true

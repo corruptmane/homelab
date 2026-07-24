@@ -1,0 +1,27 @@
+---
+# Failures only (eventSeverity: error): broken sources, failed
+# reconciliations, and image-automation errors across the whole fleet.
+# HelmReleases live in app namespaces and are not listed; Kustomizations
+# with wait/health checks fail on their behalf.
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: flux-failures
+  namespace: flux-system
+spec:
+  providerRef:
+    name: alertmanager
+  eventSeverity: error
+  eventSources:
+    - kind: GitRepository
+      name: "*"
+    - kind: Kustomization
+      name: "*"
+    - kind: HelmRepository
+      name: "*"
+    - kind: ImageRepository
+      name: "*"
+    - kind: ImagePolicy
+      name: "*"
+    - kind: ImageUpdateAutomation
+      name: "*"

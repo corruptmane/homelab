@@ -1,0 +1,12 @@
+---
+# Flux failure events ride the same Alertmanager -> Telegram pipe as the
+# vmalert rule alerts; no credentials needed here since Alertmanager owns
+# the receiver config.
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+metadata:
+  name: alertmanager
+  namespace: flux-system
+spec:
+  type: alertmanager
+  address: http://vmalertmanager-victoria-metrics-victoria-metrics-k8s-stack.monitoring.svc:9093/api/v2/alerts
