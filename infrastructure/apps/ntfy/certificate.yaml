@@ -1,0 +1,13 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ntfy-tls
+  namespace: ntfy
+spec:
+  secretName: ntfy-tls
+  dnsNames:
+    - notify.corruptmane.xyz
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer

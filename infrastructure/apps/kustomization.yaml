@@ -11,3 +11,11 @@ resources:
   - grafana/gateway.yaml
   - grafana/httproute.yaml
   - grafana/helmrelease.yaml
+
+  - ntfy/external-secret.yaml
+  - ntfy/pvc.yaml
+  - ntfy/deployment.yaml
+  - ntfy/service.yaml
+  - ntfy/certificate.yaml
+  - ntfy/gateway.yaml
+  - ntfy/httproute.yaml

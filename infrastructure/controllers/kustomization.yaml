@@ -28,6 +28,8 @@ resources:
   - zitadel/namespace.yaml
   - zitadel/helmrepository.yaml
 
+  - ntfy/namespace.yaml
+
   - monitoring/namespace.yaml
   - monitoring/helmrepository.yaml
   - monitoring/external-secret.yaml
