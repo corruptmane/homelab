@@ -35,3 +35,16 @@ Because the live chain is `cvgen-db -> migrations -> apps -> canary -> alerts`,
 a failed `cvgen-db` (e.g. substitution secret missing) freezes reconciliation of ALL
 downstream cvgen Kustomizations. Running workloads are unaffected, but new cv-repo
 changes stop rolling out until the SSM parameter exists and reconciliation heals.
+
+## Bootstrap & runbook notes from the backup wiring rollout
+
+- First provisioning of a substituted layer is order-sensitive: postBuild failure happens
+  PRE-apply, so a configs layer whose substituteFrom Secret is rendered by an ExternalSecret
+  inside that same layer cannot self-heal by retries alone. One-time bootstrap: apply the
+  destination ExternalSecret verbatim from git first (`kubectl apply -f` of the doc), let ESO
+  sync, then reconcile the layer. Done for `zitadel-db-destination` on 2026-08-24.
+- `kubectl get backup` resolves to Longhorn's Backup CRD — CNPG backups need the fully
+  qualified name: `kubectl get backups.postgresql.cnpg.io -n <ns>`.
+- Rule ingestion is verified against vmalert, not vmsingle:
+  `kubectl get --raw '/api/v1/namespaces/monitoring/services/http:vmalert-victoria-metrics-victoria-metrics-k8s-stack:8080/proxy/api/v1/rules'`
+  (cluster-internal DNS names don't resolve off-cluster).
