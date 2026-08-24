@@ -32,3 +32,49 @@ spec:
       work_mem: "2MB"
       maintenance_work_mem: "16MB"
       max_connections: "20"
+
+  # Backups to S3 via barmanObjectStore — same deliberately-accepted
+  # deprecation stance as cvgen-db (native barmanObjectStore remains
+  # functional on CNPG 1.28.x; revisit when the Barman Cloud plugin lands).
+  # Verified facts behind this block:
+  # 1. Adding .spec.backup to the RUNNING cluster does not restart pods or
+  #    touch PVCs: archive_mode is always on and archive_command re-reads
+  #    the Cluster on every invocation; credentials never enter the pod spec.
+  # 2. ${ZITADEL_BACKUP_DESTINATION} is substituted by Flux
+  #    (infrastructure-configs postBuild.substituteFrom <- Secret
+  #    zitadel-db-destination in flux-system) BEFORE apply; substitution
+  #    fails loudly until the owner's SSM parameter exists, by design.
+  # 3. AWS-native S3: no endpointURL/endpointCA (an endpointCA would roll
+  #    pods); gzip compression is valid across barman-cloud versions.
+  backup:
+    barmanObjectStore:
+      destinationPath: ${ZITADEL_BACKUP_DESTINATION}
+      s3Credentials:
+        accessKeyId:
+          name: zitadel-db-backup
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: zitadel-db-backup
+          key: SECRET_ACCESS_KEY
+      wal:
+        compression: gzip
+      data:
+        compression: gzip
+    retentionPolicy: "30d"
+---
+# Nightly base backups of zitadel-db. SIX-FIELD cron (seconds first):
+# daily at 04:45 UTC, staggered after cvgen-db's 03:30 slot (shared bucket
+# and IAM user). Single instance: backups run on the primary.
+# immediate:true fires one base backup right after creation — the earliest
+# possible end-to-end success signal for this wiring.
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: zitadel-db-scheduled
+  namespace: zitadel
+spec:
+  schedule: "0 45 4 * * *"
+  immediate: true
+  backupOwnerReference: cluster
+  cluster:
+    name: zitadel-db

@@ -15,3 +15,11 @@ spec:
   prune: true
   dependsOn:
     - name: infrastructure-controllers
+  postBuild:
+    substituteFrom:
+      # Rendered by configs/zitadel ESO from SSM into flux-system —
+      # kustomize-controller resolves substitution sources only inside the
+      # Kustomization's own namespace. Reconciliation fails loudly until
+      # /homelab/cnpg-backup-bucket-name exists; self-heals afterwards.
+      - kind: Secret
+        name: zitadel-db-destination
