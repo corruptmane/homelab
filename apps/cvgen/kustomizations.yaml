@@ -22,12 +22,21 @@ spec:
   interval: 10m
   dependsOn:
     - name: cvgen-infra
+    # cvgen-secrets must be Ready first so ESO has synced the CNPG
+    # credentials before the Cluster applies; the postBuild substitution
+    # source below is fleet-rendered (see external-secret.yaml) and fails
+    # reconciliation loudly until /homelab/cnpg-backup-bucket-name exists.
+    - name: cvgen-secrets
   sourceRef:
     kind: GitRepository
     name: cvgen
   path: ./deploy/k8s/db
   prune: true
   wait: true
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cvgen-db-destination
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -92,4 +101,34 @@ spec:
     kind: GitRepository
     name: cvgen
   path: ./deploy/k8s/image-automation
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cvgen-secrets
+  namespace: flux-system
+spec:
+  interval: 10m
+  dependsOn:
+    - name: cvgen-infra
+  sourceRef:
+    kind: GitRepository
+    name: cvgen
+  path: ./deploy/k8s/secrets
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cvgen-alerts
+  namespace: flux-system
+spec:
+  interval: 10m
+  dependsOn:
+    - name: cvgen-canary
+  sourceRef:
+    kind: GitRepository
+    name: cvgen
+  path: ./deploy/k8s/alerting
   prune: true
