@@ -80,3 +80,6 @@ spec:
         enabled: true
       ui:
         enabled: true
+
+    extraConfig:
+      policy-audit-mode: "true"
