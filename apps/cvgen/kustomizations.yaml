@@ -12,6 +12,7 @@ spec:
   path: ./deploy/k8s/infra
   prune: true
   wait: true
+  suspend: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -33,6 +34,7 @@ spec:
   path: ./deploy/k8s/db
   prune: true
   wait: true
+  suspend: true
   postBuild:
     substituteFrom:
       - kind: Secret
@@ -56,6 +58,7 @@ spec:
   # wait gates cvgen-apps on migration completion.
   force: true
   wait: true
+  suspend: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -72,6 +75,7 @@ spec:
   path: ./deploy/k8s/apps
   prune: true
   wait: true
+  suspend: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -87,6 +91,7 @@ spec:
     name: cvgen
   path: ./deploy/k8s/canary
   prune: true
+  suspend: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -102,6 +107,7 @@ spec:
     name: cvgen
   path: ./deploy/k8s/image-automation
   prune: true
+  suspend: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -117,6 +123,7 @@ spec:
     name: cvgen
   path: ./deploy/k8s/secrets
   prune: true
+  suspend: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -132,3 +139,4 @@ spec:
     name: cvgen
   path: ./deploy/k8s/alerting
   prune: true
+  suspend: true

@@ -14,3 +14,4 @@ spec:
     branch: main
   secretRef:
     name: cvgen-deploy-key
+  suspend: true
